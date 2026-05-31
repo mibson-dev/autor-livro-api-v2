@@ -39,7 +39,7 @@ Ativação da validação no Controller com `@Valid` e tratamento do erro de val
 - Spring Data JPA
 - Spring Boot Starter Validation
 - Lombok
-- H2 Database
+- PostgreSQL
 - Maven
 
 ---
