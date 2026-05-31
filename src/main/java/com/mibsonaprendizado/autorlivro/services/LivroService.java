@@ -24,18 +24,20 @@ public class LivroService {
     private AutorRepository autorRepository;
 
     public List<LivroResponseDTO> listarLivros () {
+
         List<Livro> livros = livroRepository.findAll();
 
         List<LivroResponseDTO> livroResponseDTOS = new ArrayList<>();
 
         for (Livro livro : livros) {
-            LivroResponseDTO livroResponseDTO = new LivroResponseDTO();
 
-            livroResponseDTO.setAutor(livro.getAutor().getNome());
-            livroResponseDTO.setId(livro.getId());
-            livroResponseDTO.setTitulo(livro.getTitulo());
-            livroResponseDTO.setAnoPublicacao(livro.getAnoPublicacao());
-            livroResponseDTO.setGenero(livro.getGenero());
+            LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
+                    livro.getAutor().getNome(),
+                    livro.getId(),
+                    livro.getTitulo(),
+                    livro.getAnoPublicacao(),
+                    livro.getGenero()
+            );
 
             livroResponseDTOS.add(livroResponseDTO);
         }
@@ -46,37 +48,36 @@ public class LivroService {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new LivroNaoEncontradoException("Livro não encontrado."));
 
-        LivroResponseDTO livroResponseDTO = new LivroResponseDTO();
-
-        livroResponseDTO.setAutor(livro.getAutor().getNome());
-        livroResponseDTO.setId(livro.getId());
-        livroResponseDTO.setTitulo(livro.getTitulo());
-        livroResponseDTO.setAnoPublicacao(livro.getAnoPublicacao());
-        livroResponseDTO.setGenero(livro.getGenero());
+        LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
+                livro.getAutor().getNome(),
+                livro.getId(),
+                livro.getTitulo(),
+                livro.getAnoPublicacao(),
+                livro.getGenero()
+        );
 
         return livroResponseDTO;
     }
 
     public LivroResponseDTO cadastrarLivro (LivroRequestDTO livroRequestDTO) {
-        Autor autorEncontrado = autorRepository.findById(livroRequestDTO.getAutor().getId())
+        Autor autorEncontrado = autorRepository.findById(livroRequestDTO.autor().getId())
                 .orElseThrow(() -> new AutorNaoEncontradoException("Autor não encontrado."));
 
         Livro livro = new Livro();
 
         livro.setAutor(autorEncontrado);
-        livro.setTitulo(livroRequestDTO.getTitulo());
-        livro.setAnoPublicacao(livroRequestDTO.getAnoPublicacao());
-        livro.setGenero(livroRequestDTO.getGenero());
+        livro.setTitulo(livroRequestDTO.titulo());
+        livro.setAnoPublicacao(livroRequestDTO.anoPublicacao());
+        livro.setGenero(livroRequestDTO.genero());
 
         Livro livroSalvo = livroRepository.save(livro);
 
-        LivroResponseDTO livroResponseDTO = new LivroResponseDTO();
-
-        livroResponseDTO.setAutor(livroSalvo.getAutor().getNome());
-        livroResponseDTO.setId(livroSalvo.getId());
-        livroResponseDTO.setTitulo(livroSalvo.getTitulo());
-        livroResponseDTO.setAnoPublicacao(livroSalvo.getAnoPublicacao());
-        livroResponseDTO.setGenero(livroSalvo.getGenero());
+        LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
+                livroSalvo.getAutor().getNome(),
+                livroSalvo.getId(),
+                livroSalvo.getTitulo(),
+                livroSalvo.getAnoPublicacao(),
+                livroSalvo.getGenero());
 
         return livroResponseDTO;
     }
