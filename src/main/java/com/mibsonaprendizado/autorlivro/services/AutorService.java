@@ -6,10 +6,9 @@ import com.mibsonaprendizado.autorlivro.exceptions.AutorNaoEncontradoException;
 import com.mibsonaprendizado.autorlivro.model.Autor;
 import com.mibsonaprendizado.autorlivro.repositories.AutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AutorService {
@@ -17,35 +16,23 @@ public class AutorService {
     @Autowired
     private AutorRepository autorRepository;
 
-    public List<AutorResponseDTO> listarAutores () {
-        List<Autor> autores = autorRepository.findAll();
-
-        List<AutorResponseDTO> autorResponseDTOS = new ArrayList<>();
-
-        for (Autor autor : autores) {
-
-            AutorResponseDTO autorResponseDTO = new AutorResponseDTO(
-                    autor.getId(),
-                    autor.getNome(),
-                    autor.getNacionalidade()
-            );
-
-            autorResponseDTOS.add(autorResponseDTO);
-        }
-        return autorResponseDTOS;
+    public Page<AutorResponseDTO> listarAutores (Pageable pageable) {
+        return autorRepository.findAll(pageable).map(autor -> new AutorResponseDTO(
+                autor.getId(),
+                autor.getNome(),
+                autor.getNacionalidade()
+        ));
     }
 
     public AutorResponseDTO buscarAutorPorId (Long id) {
         Autor autor = autorRepository.findById(id)
                 .orElseThrow(() -> new AutorNaoEncontradoException("Autor não encontrado."));
 
-        AutorResponseDTO autorResponseDTO = new AutorResponseDTO(
+        return new AutorResponseDTO(
                 autor.getId(),
                 autor.getNome(),
                 autor.getNacionalidade()
         );
-
-        return autorResponseDTO;
     }
 
     public AutorResponseDTO cadastrarAutor (AutorRequestDTO autorRequestDTO) {
@@ -56,13 +43,11 @@ public class AutorService {
 
         Autor autorSalvo = autorRepository.save(autor);
 
-        AutorResponseDTO autorResponseDTO = new AutorResponseDTO(
+        return new AutorResponseDTO(
                 autorSalvo.getId(),
                 autorSalvo.getNome(),
                 autorSalvo.getNacionalidade()
         );
-
-        return autorResponseDTO;
     }
 
     public void deletarAutorPorId (Long id) {

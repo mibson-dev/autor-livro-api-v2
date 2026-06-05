@@ -2,10 +2,12 @@ package com.mibsonaprendizado.autorlivro.controller;
 
 import com.mibsonaprendizado.autorlivro.DTO.AutorRequestDTO;
 import com.mibsonaprendizado.autorlivro.DTO.AutorResponseDTO;
-import com.mibsonaprendizado.autorlivro.DTO.LivroResponseDTO;
 import com.mibsonaprendizado.autorlivro.services.AutorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,8 @@ public class AutorController {
     private AutorService autorService;
 
     @GetMapping
-    public List<AutorResponseDTO> listar () {
-        return autorService.listarAutores();
+    public Page<AutorResponseDTO> listar (@PageableDefault(size = 5, sort = "nome") Pageable pageable) {
+        return autorService.listarAutores(pageable);
     }
 
     @GetMapping("/{id}")

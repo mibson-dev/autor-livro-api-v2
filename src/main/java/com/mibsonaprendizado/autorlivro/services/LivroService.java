@@ -9,10 +9,9 @@ import com.mibsonaprendizado.autorlivro.model.Livro;
 import com.mibsonaprendizado.autorlivro.repositories.AutorRepository;
 import com.mibsonaprendizado.autorlivro.repositories.LivroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class LivroService {
@@ -23,40 +22,29 @@ public class LivroService {
     @Autowired
     private AutorRepository autorRepository;
 
-    public List<LivroResponseDTO> listarLivros () {
+    public Page<LivroResponseDTO> listarLivros (Pageable pageable) {
 
-        List<Livro> livros = livroRepository.findAll();
-
-        List<LivroResponseDTO> livroResponseDTOS = new ArrayList<>();
-
-        for (Livro livro : livros) {
-
-            LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
-                    livro.getAutor().getNome(),
-                    livro.getId(),
-                    livro.getTitulo(),
-                    livro.getAnoPublicacao(),
-                    livro.getGenero()
-            );
-
-            livroResponseDTOS.add(livroResponseDTO);
-        }
-        return livroResponseDTOS;
+        return livroRepository.findAll(pageable)
+                .map(livro -> new LivroResponseDTO(
+                        livro.getAutor().getNome(),
+                        livro.getId(),
+                        livro.getTitulo(),
+                        livro.getAnoPublicacao(),
+                        livro.getGenero()
+                ));
     }
 
     public LivroResponseDTO buscarLivroPorId (Long id) {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new LivroNaoEncontradoException("Livro não encontrado."));
 
-        LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
+        return new LivroResponseDTO(
                 livro.getAutor().getNome(),
                 livro.getId(),
                 livro.getTitulo(),
                 livro.getAnoPublicacao(),
                 livro.getGenero()
         );
-
-        return livroResponseDTO;
     }
 
     public LivroResponseDTO cadastrarLivro (LivroRequestDTO livroRequestDTO) {
@@ -72,14 +60,12 @@ public class LivroService {
 
         Livro livroSalvo = livroRepository.save(livro);
 
-        LivroResponseDTO livroResponseDTO = new LivroResponseDTO(
+        return new LivroResponseDTO(
                 livroSalvo.getAutor().getNome(),
                 livroSalvo.getId(),
                 livroSalvo.getTitulo(),
                 livroSalvo.getAnoPublicacao(),
                 livroSalvo.getGenero());
-
-        return livroResponseDTO;
     }
 
     public void deletarLivroPorId (Long id) {
