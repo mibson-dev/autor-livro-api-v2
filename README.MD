@@ -41,7 +41,10 @@ Substituição das classes DTO por Records — eliminando construtores, getters 
 - Spring Boot Starter Validation
 - Lombok
 - PostgreSQL
+<<<<<<< HEAD
 - jjwt 0.12.6
+=======
+>>>>>>> 7b245a1d323e49a262ef4f3a5ea5747d604027e3
 - Maven
 
 ---
@@ -108,6 +111,30 @@ JWT_SECRET=sua-chave-secreta-minimo-32-caracteres
 
 ## Como usar o token no Postman
 
+<<<<<<< HEAD
 1. Faça `POST /auth/login` com email e senha
 2. Copie o token retornado
 3. Nas demais requisições vá em **Authorization → Bearer Token** e cole o token
+=======
+### Cadastrar autor
+```json
+POST /autores
+{
+    "nome": "Machado de Assis",
+    "nacionalidade": "Brasileira"
+}
+```
+
+### Cadastrar livro
+```json
+POST /livros
+{
+    "titulo": "Dom Casmurro",
+    "anoPublicacao": 1899,
+    "genero": "Romance",
+    "autor": {
+        "id": 1
+    }
+}
+```
+>>>>>>> 7b245a1d323e49a262ef4f3a5ea5747d604027e3
